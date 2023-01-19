@@ -37,4 +37,11 @@ pub mod round {
         let n = 10.0_f64.powi(pr);
         (x * n).round() / (n)
     }
+    pub fn safediv(x: u64, y: f32) -> f32 {
+        if y <= 0.01f32 {
+            return 0f32;
+        } else {
+            return x as f32 / y as f32;
+        }
+    }
 }

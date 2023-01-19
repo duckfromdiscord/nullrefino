@@ -174,7 +174,7 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
         state.dt_since_fps_refresh += app.timer.delta_f32();
 
         state.tgame.update(lastframe.into());
-        state.score = state.tgame.get_score();
+        state.score = state.tgame.get_score() + 100;
         state.line = state.tgame.get_lines_completed();
     
 

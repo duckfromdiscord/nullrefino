@@ -10,6 +10,7 @@ pub use nullrefino::loadtexture::loadtexture;
 pub use nullrefino::drawfont::drawtext;
 pub use nullrefino::drawfont::drawfps;
 pub use nullrefino::round::round;
+pub use nullrefino::round::safediv;
 pub use crate::board::board::TColor;
 pub use crate::board::board;
 
@@ -74,9 +75,11 @@ pub fn draw_bkgs(draw: &mut Draw, app: &mut App, state: &mut State) {
 
         // Score/min
         drawtext(draw, "blue_", &state.font_atlas, "score/min".into(), 248f32, 256f32, 16f32);
+        drawtext(draw, "grey_", &state.font_atlas, format!("{}", safediv( state.score, (&state.dt / 60f32) ) ), 248f32, 274f32, 16f32);
 
         // Line/min
         drawtext(draw, "blue_", &state.font_atlas, "line/min".into(), 248f32, 304f32, 16f32);
+        drawtext(draw, "grey_", &state.font_atlas, format!("{:03}", safediv( state.line.try_into().unwrap(), (&state.dt / 60f32) ) ), 248f32, 322f32, 16f32);
 
         // Time
         drawtext(draw, "blue_", &state.font_atlas, "time".into(), 248f32, 352f32, 16f32);
