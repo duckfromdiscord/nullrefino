@@ -22,7 +22,7 @@ pub struct State {
     pub board_bkg: Texture,
     pub board_outline: Texture,
     pub score: u64,
-    pub line: u64,
+    pub line: usize,
     pub board: [[TColor; 20]; 10],
     pub dt: f32,
     pub paused: bool,
