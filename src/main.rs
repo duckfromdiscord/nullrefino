@@ -59,7 +59,8 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
 
     let dt_since_fps_refresh: f32 = 0f32;
     let frame_since_down: f32 = 0f32;
-
+    let dt_since_left: f32 = 0f32;
+    let dt_since_right: f32 = 0f32;
     let rand = Rand {};
     let game_size = Size { height: 20, width: 10 };
     let tgame = Game::new(&game_size, Box::new(rand));
@@ -81,29 +82,66 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
         fps,
         dt_since_fps_refresh,
         frame_since_down,
+        dt_since_left,
+        dt_since_right,
         tgame
     }
 }
 
 
+
+fn key_down(app: &mut App, key: KeyCode) -> bool {
+    if app.keyboard.is_down(key) {
+        return true;
+    }
+    return false;
+}
+
+fn key_down_first(app: &mut App, key: KeyCode) -> bool {
+    if key_down(app, key) && app.keyboard.was_pressed(key) {
+        return true;
+    }
+    return false;
+}
+
+fn key_down_time(app: &mut App, key: KeyCode, das: f32, time: f32) -> bool {
+    if key_down(app, key) && (time >= das) {
+        return true;
+    }
+    return false;
+}
+
+fn das(app: &mut App, state: &mut State, key: KeyCode, action: Action, das: f32, time: f32) -> f32 {
+    let mut ftime = time as f32;
+    if key_down(app, key)  {
+        ftime += app.timer.delta_f32();
+    } else {
+        ftime = 0f32;
+    }
+    
+    if key_down_first(app, key) || key_down_time(app, key, das, time) {
+        state.tgame.perform(action);
+    }
+
+
+    return ftime;
+}
+
 fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
 
     state.last_key = app.keyboard.last_key_released();
     
-    if app.keyboard.is_down(KeyCode::Escape) && app.keyboard.was_pressed(KeyCode::Escape) {
-        //app.audio.play_sound(&state.pause_snd, 0.9f32, false);
+    if key_down_first(app, KeyCode::Escape) {
+        app.audio.play_sound(&state.pause_snd, 0.8f32, false);
         state.paused = !state.paused;
     }
 
-    if app.keyboard.is_down(KeyCode::Left) && app.keyboard.was_pressed(KeyCode::Left) {
-        state.tgame.perform(Action::MoveLeft);
-    }
+    
+    state.dt_since_left = das(app, state, KeyCode::Left, Action::MoveLeft, 14f32 * (1f32/60f32), state.dt_since_left);
+    state.dt_since_right = das(app, state, KeyCode::Right, Action::MoveRight, 14f32 * (1f32/60f32), state.dt_since_right);
 
-    if app.keyboard.is_down(KeyCode::Right) && app.keyboard.was_pressed(KeyCode::Right) {
-        state.tgame.perform(Action::MoveRight);
-    }
 
-    if app.keyboard.is_down(KeyCode::Z) && app.keyboard.was_pressed(KeyCode::Z) {
+    if key_down_first(app, KeyCode::Z) {
         state.tgame.perform(Action::Rotate);
     }
 

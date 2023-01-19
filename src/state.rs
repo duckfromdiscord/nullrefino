@@ -31,6 +31,8 @@ pub struct State {
     pub fps: std::string::String,
     pub dt_since_fps_refresh: f32,
     pub frame_since_down: f32,
+    pub dt_since_left: f32,
+    pub dt_since_right: f32,
     pub tgame: Game,
 }
 
