@@ -1,0 +1,20 @@
+[package]
+name = "nullrefino"
+version = "0.1.0"
+edition = "2021"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+notan = {version = "0.8.0", features = ["audio"]}
+notan_audio = "0.8.0"
+rand = "0.8.5"
+tetris_core_mod = {path = "../tetris_core_mod"}
+
+[profile.release]
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = 'abort'
+strip = "debuginfo" # strip true does NOT work with wasm.

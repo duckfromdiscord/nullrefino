@@ -1,0 +1,41 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup toolchain
+      uses: dtolnay/rust-toolchain@master
+      with:
+          toolchain: nightly
+          targets: wasm32-unknown-unknown
+          components: rust-src
+    - uses: jetli/trunk-action@v0.4.0
+      with:
+          version: 'v0.16.0'
+    - uses: actions/checkout@v3
+    - name: Build
+      run: trunk build --release
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: wasmrelease
+        path: /home/runner/work/nullrefino/nullrefino/dist
+    - name: 'Deploy to Netlify'
+      uses: jsmrcaga/action-netlify-deploy@v1.1.0
+      with:
+          install_command: "echo skip installing dependencies"
+          use_nvm: false
+          NETLIFY_AUTH_TOKEN: ${{ secrets.MY_TOKEN_SECRET }}
+          NETLIFY_DEPLOY_TO_PROD: true
+          build_directory: dist
+          NETLIFY_SITE_ID: '630dfb9f-b359-4047-bf4e-e76e4df918e9'
