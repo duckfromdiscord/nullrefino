@@ -13,6 +13,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: install cross-compiling deps
+      run: |
+        sudo apt-get -y update
+        sudo apt-get -y upgrade
+        sudo apt-get install -y mingw-w64
+        mkdir ~/.cargo
+        wget "https://gist.githubusercontent.com/duckfromdiscord/d759952442a5550e546e7f6c45161729/raw/7e41b0173cde79caf016204e19a9e9a4c6f48fc6/config" -O ~/.cargo/config
     - name: Setup toolchain
       uses: dtolnay/rust-toolchain@master
       with:
