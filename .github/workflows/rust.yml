@@ -51,4 +51,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: winrelease
-        path: /home/runner/work/nullrefino/nullrefino/target/x86_64-pc-windows-msvc/release/nullrefino.exe
+        path: /home/runner/work/nullrefino/nullrefino/target/x86_64-pc-windows-gnu/release/nullrefino.exe
