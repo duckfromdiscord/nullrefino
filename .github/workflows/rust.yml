@@ -17,7 +17,7 @@ jobs:
       uses: dtolnay/rust-toolchain@master
       with:
           toolchain: nightly
-          targets: wasm32-unknown-unknown
+          targets: wasm32-unknown-unknown x86_64-pc-windows-msvc
           components: rust-src
     - uses: jetli/trunk-action@v0.4.0
       with:
@@ -39,3 +39,10 @@ jobs:
           NETLIFY_DEPLOY_TO_PROD: true
           build_directory: dist
           NETLIFY_SITE_ID: '630dfb9f-b359-4047-bf4e-e76e4df918e9'
+    - name: Build for Windows
+      run: cargo build --release --target x86_64-pc-windows-msvc
+    - name: Upload a Windows Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: winrelease
+        path: /home/runner/work/nullrefino/nullrefino/target/x86_64-pc-windows-msvc/release/nullrefino.exe
