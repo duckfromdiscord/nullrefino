@@ -10,7 +10,7 @@ edition = "2021"
 notan = {version = "0.8.0", features = ["audio"]}
 notan_audio = "0.8.0"
 rand = "0.8.5"
-tetris_core_mod = {path = "../tetris_core_mod"}
+tetris_core_mod = {git = "https://github.com/duckfromdiscord/tetris_core_mod.git"}
 
 [profile.release]
 opt-level = 'z'
