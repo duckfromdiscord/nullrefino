@@ -136,30 +136,6 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
         state.paused = !state.paused;
     }
 
-    
-    state.dt_since_left = das(app, state, KeyCode::Left, Action::MoveLeft, 14f32 * (1f32/60f32), state.dt_since_left);
-    state.dt_since_right = das(app, state, KeyCode::Right, Action::MoveRight, 14f32 * (1f32/60f32), state.dt_since_right);
-
-
-    if key_down_first(app, KeyCode::Z) {
-        state.tgame.perform(Action::Rotate);
-    }
-
-    if app.keyboard.is_down(KeyCode::Down) {
-        state.frame_since_down += 1f32;
-        if state.frame_since_down % 3.0f32 == 0.0f32 {
-            state.tgame.perform(Action::MoveDown);
-        }
-    } else {
-        state.frame_since_down = 1f32;
-    }
-
-    if app.keyboard.is_down(KeyCode::Up) && app.keyboard.was_pressed(KeyCode::Up) {
-        for _i in 0..20 {
-            state.tgame.perform(Action::MoveDown);
-        }
-    }
-
     let mut draw = gfx.create_draw();
 
     draw.clear(Color::BLACK);
@@ -168,6 +144,31 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
     draw_bkgs(&mut draw, app, state);
 
     if !state.paused {
+
+
+        state.dt_since_left = das(app, state, KeyCode::Left, Action::MoveLeft, 14f32 * (1f32/60f32), state.dt_since_left);
+        state.dt_since_right = das(app, state, KeyCode::Right, Action::MoveRight, 14f32 * (1f32/60f32), state.dt_since_right);
+    
+    
+        if key_down_first(app, KeyCode::Z) {
+            state.tgame.perform(Action::Rotate);
+        }
+    
+        if app.keyboard.is_down(KeyCode::Down) {
+            state.frame_since_down += 1f32;
+            if state.frame_since_down % 3.0f32 == 0.0f32 {
+                state.tgame.perform(Action::MoveDown);
+            }
+        } else {
+            state.frame_since_down = 1f32;
+        }
+    
+        if app.keyboard.is_down(KeyCode::Up) && app.keyboard.was_pressed(KeyCode::Up) {
+            for _i in 0..20 {
+                state.tgame.perform(Action::MoveDown);
+            }
+        }
+
         let lastframe = app.timer.delta_f32();
         state.dt += lastframe;
         state.dt_since_fps_refresh += app.timer.delta_f32();
