@@ -16,7 +16,6 @@ jobs:
     - name: install cross-compiling deps
       run: |
         sudo apt-get -y update
-        sudo apt-get -y upgrade
         sudo apt-get install -y mingw-w64
         mkdir ~/.cargo
         wget "https://gist.githubusercontent.com/duckfromdiscord/d759952442a5550e546e7f6c45161729/raw/7e41b0173cde79caf016204e19a9e9a4c6f48fc6/config" -O ~/.cargo/config
@@ -24,7 +23,7 @@ jobs:
       uses: dtolnay/rust-toolchain@master
       with:
           toolchain: nightly
-          targets: wasm32-unknown-unknown x86_64-pc-windows-msvc
+          targets: wasm32-unknown-unknown x86_64-pc-windows-gnu
           components: rust-src
     - uses: jetli/trunk-action@v0.4.0
       with:
@@ -47,7 +46,7 @@ jobs:
           build_directory: dist
           NETLIFY_SITE_ID: '630dfb9f-b359-4047-bf4e-e76e4df918e9'
     - name: Build for Windows
-      run: cargo build --release --target x86_64-pc-windows-msvc
+      run: cargo build --release --target x86_64-pc-windows-gnu
     - name: Upload a Windows Build Artifact
       uses: actions/upload-artifact@v3
       with:
