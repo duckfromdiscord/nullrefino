@@ -10,7 +10,9 @@ edition = "2021"
 notan = {version = "0.8.0", features = ["audio"]}
 notan_audio = "0.8.0"
 rand = "0.8.5"
+rand_chacha = "0.3.1"
 tetris_core_mod = {git = "https://github.com/duckfromdiscord/tetris_core_mod.git"}
+szo_randomizer = {git = "https://github.com/duckfromdiscord/szo_randomizer.git"}
 
 [profile.release]
 opt-level = 'z'

@@ -11,7 +11,6 @@ pub use nullrefino::round::round;
 
 use tetris_core_mod::*;
 
-use rand::Rng;
 
 
 mod state;
@@ -20,12 +19,22 @@ use crate::state::State;
 use crate::board::board::TColor;
 use crate::state::draw_bkgs;
 use crate::state::draw_block;
+pub use tetris_core_mod::game::{Game, Randomizer, Action};
+pub use szo_randomizer::*;
 
-struct Rand;
+use std::cell::RefCell;
+
+struct Rand {
+    szo: RefCell<BagNoSZORandomizer>,
+}
 impl Randomizer for Rand {
-    fn random_between(&self, lower: i32, higher: i32) -> i32 {
-        let mut rng = rand::thread_rng();
-        return rng.gen_range(lower..higher);
+    fn random(&self) -> i32 {
+        let mut temp_szo = self.szo.borrow_mut();
+        let random_number: usize;
+        random_number = temp_szo.bag_randomizer.next();
+        //self.szo.replace(temp_szo);
+        println!("{}", random_number);
+        return random_number.try_into().unwrap();
     }
 }
 
@@ -61,7 +70,11 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
     let frame_since_down: f32 = 0f32;
     let dt_since_left: f32 = 0f32;
     let dt_since_right: f32 = 0f32;
-    let rand = Rand {};
+    let szo = BagNoSZORandomizer::new([true, true, true, true, true, true, true, false, false, false, false], 21);
+    let rand = Rand {
+        szo: RefCell::new(szo),
+    };
+    rand.szo.borrow_mut().init();
     let game_size = Size { height: 20, width: 10 };
     let tgame = Game::new(&game_size, Box::new(rand));
 
@@ -84,7 +97,7 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
         frame_since_down,
         dt_since_left,
         dt_since_right,
-        tgame
+        tgame,
     }
 }
 
