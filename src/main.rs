@@ -4,6 +4,7 @@
 use notan::draw::*;
 use notan::prelude::*;
 
+pub use nullrefino::colld::*;
 pub use nullrefino::loadtexture::loadtexture;
 pub use nullrefino::drawfont::drawtext;
 pub use nullrefino::drawfont::drawfps;
@@ -19,10 +20,13 @@ use crate::state::State;
 use crate::board::board::TColor;
 use crate::state::draw_bkgs;
 use crate::state::draw_block;
+use nullrefino::colld::*;
+use tetris_core_mod::geometry::Point;
 pub use tetris_core_mod::game::{Game, Randomizer, Action};
 pub use szo_randomizer::*;
 
 use std::cell::RefCell;
+
 
 struct Rand {
     szo: RefCell<BagNoSZORandomizer>,
@@ -33,7 +37,7 @@ impl Randomizer for Rand {
         let random_number: usize;
         random_number = temp_szo.bag_randomizer.next();
         //self.szo.replace(temp_szo);
-        println!("{}", random_number);
+        //println!("{}", random_number);
         return random_number.try_into().unwrap();
     }
 }
@@ -196,10 +200,26 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
                 state.board[j][i] = TColor::None;
             }
         }
-
-        let game_blocks = state.tgame.draw();
-
         
+        
+        let game_blocks = state.tgame.draw(); // full board
+        let mut piece_in_play = state.tgame.access_active_figure();
+        let mut board_only = state.tgame.access_board();
+
+        let mut boardvec: Vec<Point> = vec![];
+        let mut blockvec: Vec<Point> = vec![];
+
+        for point in board_only {
+            boardvec.push(point);
+        }
+        for point in piece_in_play {
+            blockvec.push(point);
+        }
+
+
+
+        let ghost: Vec<Point> = fit(boardvec, blockvec);
+
         for block in game_blocks {
             let blockx = block.position().x;
             let blocky = block.position().y;
@@ -209,6 +229,20 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
 
             state.board[xind][yind] = /*TColor::from_etoledom(block.color);*/ TColor::from_etoledom(block.color.name);
         }
+
+        for block in ghost {
+            let blockx = block.x;
+            let blocky = block.y;
+
+            let xind = blockx as usize;
+            let mut yind = blocky as usize;
+            if yind > 19 {
+                yind = 19;
+            }
+            state.board[xind][yind] = TColor::Green;
+        }
+
+
 
         /*
         let mut rng = rand::thread_rng();

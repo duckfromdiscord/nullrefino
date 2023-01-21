@@ -45,3 +45,82 @@ pub mod round {
         }
     }
 }
+
+pub mod colld {
+
+    use tetris_core_mod::geometry::Point;
+
+    pub fn pointequal(a: Point, b: Point) -> bool {
+        if a.x == b.x && a.y == b.y {
+            return true;
+        }
+        return false;
+    }
+
+
+    pub fn bvalidate(point: Point) -> bool {
+        if (point.x > 9 || point.x < 0 || point.y > 19 || point.y < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    pub fn intersect(a: &Vec<Point>, b: &Vec<Point>) -> bool {
+        for bp in b {
+            if !bvalidate(*bp) {
+                return true;
+            }
+            for ap in a {
+                if !bvalidate(*ap) {
+                    return true;
+                }
+                if pointequal(*ap, *bp) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    pub fn translate(vec: Vec<Point>) -> Vec<Point> {
+        let mut returnpoints = Vec::new();
+        for p in vec {
+            if (p.y > 19) {
+                returnpoints.push(Point {x: p.x, y: 19} );
+            } else {
+                returnpoints.push(Point {x: p.x, y: p.y + 1} );
+            }
+        }
+        return returnpoints;
+    }
+
+    pub fn rtranslate(vec: Vec<Point>) -> Vec<Point> {
+        let mut returnpoints = Vec::new();
+        for p in vec {
+            if (p.y < 0) {
+                returnpoints.push(Point {x: p.x, y: 0} );
+            } else {
+                returnpoints.push(Point {x: p.x, y: p.y - 1} );
+            }
+        }
+        return returnpoints;
+    }
+
+
+
+    pub fn fit(board: Vec<Point>, block: Vec<Point>) -> Vec<Point> {
+        let board = board.clone();
+        let mut block = block.clone();
+        let mut a: usize = 0;
+        while !intersect(&board, &block) {
+            
+            block = translate(block);
+            a += 1;
+            //println!("{}", a);
+        }
+        block = rtranslate(block);
+        return block;
+    }
+}
