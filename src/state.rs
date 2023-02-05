@@ -11,8 +11,7 @@ pub use nullrefino::drawfont::drawtext;
 pub use nullrefino::drawfont::drawfps;
 pub use nullrefino::round::round;
 pub use nullrefino::round::safediv;
-pub use crate::board::board::TColor;
-pub use crate::board::board;
+pub use crate::board::TColor;
 
 
 #[derive(AppState)]
@@ -48,7 +47,7 @@ pub fn time_to_stamp(time: f32) -> std::string::String {
     
     let sec = sec - (min * 60.0);
 
-    return format!("{:02}:{:02}.{:02}", min, sec, secfrac);
+    format!("{:02}:{:02}.{:02}", min, sec, secfrac)
 }
 
 pub fn draw_bkgs(draw: &mut Draw, app: &mut App, state: &mut State) {
@@ -98,6 +97,11 @@ pub fn draw_bkgs(draw: &mut Draw, app: &mut App, state: &mut State) {
 
 pub fn draw_block(draw: &mut Draw, state: &State, x: f32, y: f32, color: TColor) {
     if color.as_str() == "None" {
+        return;
+    }
+    if color.as_str() == "clear" {
+        let blockimage = &state.block_atlas.get("blue").unwrap();
+        draw.image(blockimage).position(x,y).alpha(0.3f32);
         return;
     }
     let blockimage = &state.block_atlas.get(color.as_str()).unwrap();

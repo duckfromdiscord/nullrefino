@@ -1,6 +1,6 @@
 
 
-pub mod board {
+
 
     #[derive(Copy, Clone)]
     pub enum TColor {
@@ -11,7 +11,8 @@ pub mod board {
         Green,
         Cyan,
         Blue,
-        Violet
+        Violet,
+        Clear
     }
     
 
@@ -25,7 +26,8 @@ pub mod board {
                 TColor::Green => "green",
                 TColor::Cyan => "cyan",
                 TColor::Blue => "blue",
-                TColor::Violet => "violet"
+                TColor::Violet => "violet",
+                TColor::Clear => "clear",
             }
         }
 
@@ -39,7 +41,8 @@ pub mod board {
                 TColor::Green => 4,
                 TColor::Cyan => 5,
                 TColor::Blue => 6,
-                TColor::Violet => 7
+                TColor::Violet => 7,
+                _ => 0,
             }
         }
 
@@ -75,4 +78,3 @@ pub mod board {
     }
 
     
-}

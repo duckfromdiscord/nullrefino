@@ -17,16 +17,15 @@ use tetris_core_mod::*;
 mod state;
 mod board;
 use crate::state::State;
-use crate::board::board::TColor;
+use crate::board::TColor;
 use crate::state::draw_bkgs;
 use crate::state::draw_block;
-use nullrefino::colld::*;
 use tetris_core_mod::geometry::Point;
 pub use tetris_core_mod::game::{Game, Randomizer, Action};
 pub use szo_randomizer::*;
 
 use std::cell::RefCell;
-
+use rand::thread_rng;
 
 struct Rand {
     szo: RefCell<BagNoSZORandomizer>,
@@ -34,11 +33,8 @@ struct Rand {
 impl Randomizer for Rand {
     fn random(&self) -> i32 {
         let mut temp_szo = self.szo.borrow_mut();
-        let random_number: usize;
-        random_number = temp_szo.bag_randomizer.next();
-        //self.szo.replace(temp_szo);
-        //println!("{}", random_number);
-        return random_number.try_into().unwrap();
+        let random_number = temp_szo.bag_randomizer.next();
+        random_number.try_into().unwrap()
     }
 }
 
@@ -74,7 +70,8 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
     let frame_since_down: f32 = 0f32;
     let dt_since_left: f32 = 0f32;
     let dt_since_right: f32 = 0f32;
-    let szo = BagNoSZORandomizer::new([true, true, true, true, true, true, true, false, false, false, false], 21);
+    let mut seed_rng = thread_rng();
+    let szo = BagNoSZORandomizer::new([true, true, true, true, true, true, true, false, false, false, false], seed_rng.gen_range(0..99999999));
     let rand = Rand {
         szo: RefCell::new(szo),
     };
@@ -111,25 +108,25 @@ fn key_down(app: &mut App, key: KeyCode) -> bool {
     if app.keyboard.is_down(key) {
         return true;
     }
-    return false;
+    false
 }
 
 fn key_down_first(app: &mut App, key: KeyCode) -> bool {
     if key_down(app, key) && app.keyboard.was_pressed(key) {
         return true;
     }
-    return false;
+    false
 }
 
 fn key_down_time(app: &mut App, key: KeyCode, das: f32, time: f32) -> bool {
     if key_down(app, key) && (time >= das) {
         return true;
     }
-    return false;
+    false
 }
 
 fn das(app: &mut App, state: &mut State, key: KeyCode, action: Action, das: f32, time: f32) -> f32 {
-    let mut ftime = time as f32;
+    let mut ftime = time;
     if key_down(app, key)  {
         ftime += app.timer.delta_f32();
     } else {
@@ -141,7 +138,7 @@ fn das(app: &mut App, state: &mut State, key: KeyCode, action: Action, das: f32,
     }
 
 
-    return ftime;
+    ftime
 }
 
 fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
@@ -203,32 +200,13 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
         
         
         let game_blocks = state.tgame.draw(); // full board
-        let mut piece_in_play = state.tgame.access_active_figure();
-        let mut board_only = state.tgame.access_board();
+        let piece_in_play = state.tgame.access_active_figure();
+        let board_only = state.tgame.access_board();
 
-        let mut boardvec: Vec<Point> = vec![];
-        let mut blockvec: Vec<Point> = vec![];
-
-        for point in board_only {
-            boardvec.push(point);
-        }
-        for point in piece_in_play {
-            blockvec.push(point);
-        }
-
-
+        let boardvec: Vec<Point> = board_only;
+        let blockvec: Vec<Point> = piece_in_play;
 
         let ghost: Vec<Point> = fit(boardvec, blockvec);
-
-        for block in game_blocks {
-            let blockx = block.position().x;
-            let blocky = block.position().y;
-
-            let xind = blockx as usize;
-            let yind = blocky as usize;
-
-            state.board[xind][yind] = /*TColor::from_etoledom(block.color);*/ TColor::from_etoledom(block.color.name);
-        }
 
         for block in ghost {
             let blockx = block.x;
@@ -239,19 +217,19 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
             if yind > 19 {
                 yind = 19;
             }
-            state.board[xind][yind] = TColor::Green;
+            state.board[xind][yind] = TColor::Clear;
         }
 
 
+        for block in game_blocks {
+            let blockx = block.position().x;
+            let blocky = block.position().y;
 
-        /*
-        let mut rng = rand::thread_rng();
-        let a = rng.gen_range(0..10);
-        let b = rng.gen_range(0..20);
+            let xind = blockx as usize;
+            let yind = blocky as usize;
 
-        state.board[a][b] = TColor::from_num(rng.gen_range(0..9));
-        */
-        
+            state.board[xind][yind] = TColor::from_etoledom(block.color.name);
+        }
     }
 
     let mut pixel_x: f32 = 36f32;
