@@ -217,7 +217,7 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
             if yind > 19 {
                 yind = 19;
             }
-            state.board[xind][yind] = TColor::Clear;
+            state.board[xind][yind] = TColor::from_etoledom(state.tgame.active_figure_color().name).to_clear();
         }
 
 

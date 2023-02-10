@@ -12,7 +12,13 @@
         Cyan,
         Blue,
         Violet,
-        Clear
+        RedClear,
+        OrangeClear,
+        YellowClear,
+        GreenClear,
+        CyanClear,
+        BlueClear,
+        VioletClear,
     }
     
 
@@ -27,7 +33,13 @@
                 TColor::Cyan => "cyan",
                 TColor::Blue => "blue",
                 TColor::Violet => "violet",
-                TColor::Clear => "clear",
+                TColor::RedClear => "red",
+                TColor::OrangeClear => "orange",
+                TColor::YellowClear => "yellow",
+                TColor::GreenClear => "green",
+                TColor::CyanClear => "cyan",
+                TColor::BlueClear => "blue",
+                TColor::VioletClear => "violet",
             }
         }
 
@@ -61,6 +73,46 @@
             }
         }
         
+
+        pub fn to_clear(&self) -> TColor {
+            match self {
+                TColor::None => TColor::None,
+                TColor::Red => TColor::RedClear,
+                TColor::Orange => TColor::OrangeClear,
+                TColor::Yellow => TColor::YellowClear,
+                TColor::Green => TColor::GreenClear,
+                TColor::Cyan => TColor::CyanClear,
+                TColor::Blue => TColor::BlueClear,
+                TColor::Violet => TColor::VioletClear,
+                TColor::RedClear => TColor::RedClear,
+                TColor::OrangeClear => TColor::OrangeClear,
+                TColor::YellowClear => TColor::YellowClear,
+                TColor::GreenClear => TColor::GreenClear,
+                TColor::CyanClear => TColor::CyanClear,
+                TColor::BlueClear => TColor::BlueClear,
+                TColor::VioletClear => TColor::VioletClear,
+            }
+        }
+        
+        pub fn is_clear(&self) -> bool {
+            match self {
+                TColor::None => false,
+                TColor::Red => false,
+                TColor::Orange => false,
+                TColor::Yellow => false,
+                TColor::Green => false,
+                TColor::Cyan => false,
+                TColor::Blue => false,
+                TColor::Violet => false,
+                TColor::RedClear => true,
+                TColor::OrangeClear => true,
+                TColor::YellowClear => true,
+                TColor::GreenClear => true,
+                TColor::CyanClear => true,
+                TColor::BlueClear => true,
+                TColor::VioletClear => true,
+            }
+        }
 
         /*
         pub fn from_etoledom(clr: Color) -> TColor {

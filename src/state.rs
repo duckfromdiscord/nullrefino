@@ -99,11 +99,11 @@ pub fn draw_block(draw: &mut Draw, state: &State, x: f32, y: f32, color: TColor)
     if color.as_str() == "None" {
         return;
     }
-    if color.as_str() == "clear" {
-        let blockimage = &state.block_atlas.get("blue").unwrap();
-        draw.image(blockimage).position(x,y).alpha(0.3f32);
+    
+    let blockimage = &state.block_atlas.get(color.as_str()).unwrap();
+    if color.is_clear() {
+        draw.image(blockimage).position(x,y).alpha(0.9f32);
         return;
     }
-    let blockimage = &state.block_atlas.get(color.as_str()).unwrap();
     draw.image(blockimage).position(x,y);
 }
