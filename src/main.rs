@@ -9,6 +9,7 @@ pub use nullrefino::loadtexture::loadtexture;
 pub use nullrefino::drawfont::drawtext;
 pub use nullrefino::drawfont::drawfps;
 pub use nullrefino::round::round;
+pub use nullrefino::clear::*;
 
 use tetris_core_mod::*;
 
@@ -61,7 +62,7 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
     let paused = false;
 
     let pause_snd: AudioSource = app.audio.create_source(include_bytes!("assets/pause.wav")).unwrap();
-
+    let move_snd: AudioSource = app.audio.create_source(include_bytes!("assets/move.wav")).unwrap();
     let last_key: Option<KeyCode> = None;
 
     let fps: std::string::String = "0.0".to_string();
@@ -79,6 +80,8 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
     let game_size = Size { height: 20, width: 10 };
     let tgame = Game::new(&game_size, Box::new(rand));
 
+    let clear_pipeline = clear_shader(gfx);
+
     State {
         block_atlas,
         font_atlas,
@@ -92,12 +95,14 @@ fn init(app: &mut App, gfx: &mut Graphics) -> State {
         dt,
         paused,
         pause_snd,
+        move_snd,
         last_key,
         fps,
         dt_since_fps_refresh,
         frame_since_down,
         dt_since_left,
         dt_since_right,
+        clear_pipeline,
         tgame,
     }
 }
@@ -134,7 +139,11 @@ fn das(app: &mut App, state: &mut State, key: KeyCode, action: Action, das: f32,
     }
     
     if key_down_first(app, key) || key_down_time(app, key, das, time) {
+        let x = state.tgame.access_active_figure()[0].x;
         state.tgame.perform(action);
+        if state.tgame.access_active_figure()[0].x != x && !(key_down(app, KeyCode::Left) && key_down(app, KeyCode::Right)) { // do not make loud noise if both keys are pressed
+            app.audio.play_sound(&state.move_snd, 0.8f32, false);
+        }
     }
 
 

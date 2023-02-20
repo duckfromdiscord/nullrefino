@@ -11,6 +11,8 @@ pub use nullrefino::drawfont::drawtext;
 pub use nullrefino::drawfont::drawfps;
 pub use nullrefino::round::round;
 pub use nullrefino::round::safediv;
+
+
 pub use crate::board::TColor;
 
 
@@ -28,12 +30,14 @@ pub struct State {
     pub dt: f32,
     pub paused: bool,
     pub pause_snd: AudioSource,
+    pub move_snd: AudioSource,
     pub last_key: Option<KeyCode>,
     pub fps: std::string::String,
     pub dt_since_fps_refresh: f32,
     pub frame_since_down: f32,
     pub dt_since_left: f32,
     pub dt_since_right: f32,
+    pub clear_pipeline: Pipeline,
     pub tgame: Game,
 }
 
@@ -102,7 +106,10 @@ pub fn draw_block(draw: &mut Draw, state: &State, x: f32, y: f32, color: TColor)
     
     let blockimage = &state.block_atlas.get(color.as_str()).unwrap();
     if color.is_clear() {
-        draw.image(blockimage).position(x,y).alpha(0.9f32);
+        draw.image_pipeline()
+            .pipeline(&state.clear_pipeline);
+        draw.image(blockimage).position(x,y).alpha(0.55f32);
+        draw.image_pipeline().remove();
         return;
     }
     draw.image(blockimage).position(x,y);
