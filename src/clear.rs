@@ -38,7 +38,7 @@ const FRAGMENT: ShaderSource = notan::fragment_shader! {
         return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
     }
 
-    vec3 greyscale(vec3 color) {
+    vec3 darken(vec3 color) {
         vec4 a = vec4(rgb2hsv(color), 1.0);
         a.z *= 62.0/89.0;
         a = vec4(hsv2rgb(a.xyz), 1.0);
@@ -47,7 +47,7 @@ const FRAGMENT: ShaderSource = notan::fragment_shader! {
 
     void main() {
         vec4 c = texture(u_texture, v_uvs) * v_color;
-        color = vec4(greyscale(c.xyz),1.0);
+        color = vec4(darken(c.xyz),1.0);
     }
     "#
 };
