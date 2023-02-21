@@ -247,6 +247,7 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
     for i in 0..20 {
         for j in 0..10 {
             draw_block(&mut draw, state, pixel_x, pixel_y, state.board[j][i]);
+            draw.line((pixel_x, pixel_y), (pixel_x + 36.0, pixel_y)).color(Color::from_rgb(1.0,1.0,1.0)).width(1.0).alpha(1.0);
             pixel_x += 16f32;
         }
         pixel_x = 36f32;
