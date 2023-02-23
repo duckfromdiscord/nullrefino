@@ -166,6 +166,11 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
 
     draw_bkgs(&mut draw, app, state);
 
+
+    let board_only = state.tgame.access_board();
+
+    let boardvec: Vec<Point> = board_only;
+
     if !state.paused {
 
 
@@ -210,12 +215,10 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
         
         let game_blocks = state.tgame.draw(); // full board
         let piece_in_play = state.tgame.access_active_figure();
-        let board_only = state.tgame.access_board();
 
-        let boardvec: Vec<Point> = board_only;
         let blockvec: Vec<Point> = piece_in_play;
 
-        let ghost: Vec<Point> = fit(boardvec, blockvec);
+        let ghost: Vec<Point> = fit(boardvec.clone(), blockvec);
 
         for block in ghost {
             let blockx = block.x;
@@ -244,9 +247,33 @@ fn draw(app: &mut App, gfx: &mut Graphics, state: &mut State) {
     let mut pixel_x: f32 = 36f32;
     let mut pixel_y: f32 = 84f32;
 
+
     for i in 0..20 {
         for j in 0..10 {
             draw_block(&mut draw, state, pixel_x, pixel_y, state.board[j][i]);
+            
+            if state.board[j][i] != TColor::None && !TColor::is_clear(&state.board[j][i]) && boardvec.contains(&Point::new(j.try_into().unwrap(), i.try_into().unwrap())) {
+                if i > 0 {
+                    if state.board[j][i-1] == TColor::None && !TColor::is_clear(&state.board[j][i]) {
+                        draw.rect((pixel_x, pixel_y as f32 - 0 as f32), (16.0,1.0));
+                    }
+                }
+                if i < 19 {
+                    if state.board[j][i+1] == TColor::None && !TColor::is_clear(&state.board[j][i]) {
+                        draw.rect((pixel_x, pixel_y as f32 + 16 as f32), (16.0,1.0));
+                    }
+                }
+                if j > 0 {
+                    if state.board[j-1][i] == TColor::None && !TColor::is_clear(&state.board[j][i]) {
+                        draw.rect((pixel_x as f32 - 0 as f32, pixel_y as f32 + 0 as f32), (1.0,16.0));
+                    }
+                }
+                if j < 9 && j > 0 {
+                    if state.board[j+1][i] == TColor::None && !TColor::is_clear(&state.board[j][i]) {
+                        draw.rect((pixel_x as f32 + 16 as f32, pixel_y as f32 + 0 as f32), (1.0,16.0));
+                    }
+                }
+            }
             pixel_x += 16f32;
         }
         pixel_x = 36f32;

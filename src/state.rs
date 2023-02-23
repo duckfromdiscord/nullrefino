@@ -112,5 +112,6 @@ pub fn draw_block(draw: &mut Draw, state: &State, x: f32, y: f32, color: TColor)
         draw.image_pipeline().remove();
         return;
     }
+
     draw.image(blockimage).position(x,y);
 }
